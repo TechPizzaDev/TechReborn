@@ -25,22 +25,22 @@
 package techreborn.items.tool;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolMaterial;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import reborncore.api.items.EnchantmentTargetHandler;
 import reborncore.common.powerSystem.RcEnergyItem;
 import reborncore.common.powerSystem.RcEnergyTier;
 import reborncore.common.util.ItemUtils;
-import techreborn.init.TRContent;
+import techreborn.utils.ToolsUtil;
 
-
-public class JackhammerItem extends PickaxeItem implements RcEnergyItem, EnchantmentTargetHandler {
+public class JackhammerItem extends PickaxeItem implements RcEnergyItem {
 	public final int maxCharge;
 	public final RcEnergyTier tier;
 	public final int cost;
@@ -54,34 +54,39 @@ public class JackhammerItem extends PickaxeItem implements RcEnergyItem, Enchant
 		this.cost = cost;
 	}
 
-	/**
-	 * Checks if block in additional BlockPos should be broken. Used for AOE mining.
-	 *
-	 * @param worldIn     World reference
-	 * @param originalPos Original mined block
-	 * @param pos         Additional block to check
-	 * @return Returns true if block should be broken by AOE mining
-	 */
-	protected boolean shouldBreak(World worldIn, BlockPos originalPos, BlockPos pos) {
-		if (originalPos.equals(pos)) {
-			return false;
-		}
-		return worldIn.getBlockState(pos).isIn(TRContent.BlockTags.JACKHAMMER_MINEABLE);
-	}
-
 	// PickaxeItem
 	@Override
 	public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-		if (getStoredEnergy(stack) >= cost && state.isIn(TRContent.BlockTags.JACKHAMMER_MINEABLE)) {
+		if (getStoredEnergy(stack) < cost) return unpoweredSpeed;
+		if (ToolsUtil.JackHammerSkippedBlocks(state)) return unpoweredSpeed;
+
+		if (state.isIn(TRContent.BlockTags.JACKHAMMER_MINEABLE)) {
+
 			return miningSpeed;
+		} else {
+			return unpoweredSpeed;
 		}
-		return unpoweredSpeed;
 	}
+
+/*
+	Fabric API doesn't allow to have mining speed less than the one from vanilla ToolMaterials
+	@Override
+	public float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+		if (tag.equals(FabricToolTags.PICKAXES) && stack.getItem().isEffectiveOn(state)) {
+			if (Energy.of(stack).getEnergy() >= cost) {
+				return miningSpeed;
+			}
+		}
+		return 0.5F;
+	}*/
+
 
 	// MiningToolItem
 	@Override
 	public boolean postMine(ItemStack stack, World worldIn, BlockState blockIn, BlockPos pos, LivingEntity entityLiving) {
-		tryUseEnergy(stack, cost);
+		if (worldIn.getRandom().nextInt(EnchantmentHelper.getLevel(Enchantments.UNBREAKING, stack) + 1) == 0) {
+			tryUseEnergy(stack, cost);
+		}
 		return true;
 	}
 
@@ -107,6 +112,22 @@ public class JackhammerItem extends PickaxeItem implements RcEnergyItem, Enchant
 		return true;
 	}
 
+	// EnergyHolder
+	@Override
+	public long getEnergyCapacity() {
+		return maxCharge;
+	}
+
+	@Override
+	public RcEnergyTier getTier() {
+		return tier;
+	}
+
+	@Override
+	public long getEnergyMaxOutput() {
+		return 0;
+	}
+
 	@Override
 	public int getItemBarStep(ItemStack stack) {
 		return ItemUtils.getPowerForDurabilityBar(stack);
@@ -120,27 +141,5 @@ public class JackhammerItem extends PickaxeItem implements RcEnergyItem, Enchant
 	@Override
 	public int getItemBarColor(ItemStack stack) {
 		return ItemUtils.getColorForDurabilityBar(stack);
-	}
-
-	// RcEnergyItem
-	@Override
-	public long getEnergyCapacity(ItemStack stack) {
-		return maxCharge;
-	}
-
-	@Override
-	public RcEnergyTier getTier() {
-		return tier;
-	}
-
-	@Override
-	public long getEnergyMaxOutput(ItemStack stack) {
-		return 0;
-	}
-
-	// EnchantmentTargetHandler
-	@Override
-	public boolean modifyEnchantmentApplication(EnchantmentTarget target) {
-		return target == EnchantmentTarget.BREAKABLE;
 	}
 }
