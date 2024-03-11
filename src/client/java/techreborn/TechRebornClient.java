@@ -134,8 +134,8 @@ public class TechRebornClient implements ClientModInitializer {
 		KeyBindings.registerKeys();
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			while (KeyBindings.nanoSuitNightVision.wasPressed()) {
-				KeyBindings.handleNanoSuitNVToggle();
+			while (KeyBindings.suitNightVision.wasPressed()) {
+				KeyBindings.handleSuitNVToggle();
 			}
 		});
 
