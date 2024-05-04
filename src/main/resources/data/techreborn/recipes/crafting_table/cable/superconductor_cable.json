@@ -17,6 +17,7 @@
 	}
   },
   "result": {
-    "item": "techreborn:superconductor_cable"
+    "item": "techreborn:superconductor_cable",
+    "count": 3
   }
 }
