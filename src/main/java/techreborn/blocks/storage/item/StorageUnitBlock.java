@@ -102,7 +102,7 @@ public class StorageUnitBlock extends BlockMachineBase {
 			return 0;
 		}
 		float delta = (float) storageEntity.getCurrentCapacity()/storageEntity.getMaxCapacity();
-		return MathHelper.lerpPositive(delta, 0, 15);
+		return MathHelper.lerp(delta, 0, 15);
 	}
 
 	@SuppressWarnings("deprecation")
