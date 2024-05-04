@@ -81,7 +81,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 
 	/**
 	 * <p>
-	 *  This is used to change the speed of the crafting operation.
+	 * This is used to change the speed of the crafting operation.
 	 * <p/>
 	 *
 	 * <ul>
@@ -91,9 +91,10 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 	 * </ul>
 	 */
 	double speedMultiplier = 0;
+
 	/**
 	 * <p>
-	 *  This is used to change the power of the crafting operation.
+	 * This is used to change the power of the crafting operation.
 	 * <p/>
 	 *
 	 * <ul>
@@ -104,9 +105,12 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 	 * </ul>
 	 */
 	double powerMultiplier = 1;
+
+	double powerDivisor = 1;
+
 	/**
 	 * <p>
-	 *  This is used to change the sound of the crafting operation.
+	 * This is used to change the sound of the crafting operation.
 	 * <p/>
 	 */
 	boolean muffled = false;
@@ -122,15 +126,18 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 		return verifier.isValid();
 	}
 
-	private void syncIfNecessary(){
+	private void syncIfNecessary() {
 		if (this.markSync && this.tickTime % syncCoolDown == 0) {
 			this.markSync = false;
-			if (world == null || world.isClient) { return; }
+			if (world == null || world.isClient) {
+				return;
+			}
 			NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(this), this);
 		}
 	}
 
-	public void writeMultiblock(MultiblockWriter writer) {}
+	public void writeMultiblock(MultiblockWriter writer) {
+	}
 
 	public void syncWithAll() {
 		this.markSync = true;
@@ -339,16 +346,27 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 	@Override
 	public void resetPowerMultiplier() {
 		powerMultiplier = 1;
+		powerDivisor = 1;
 	}
 
 	@Override
 	public double getPowerMultiplier() {
-		return powerMultiplier;
+		return powerMultiplier / powerDivisor;
+	}
+
+	@Override
+	public void addPowerDivisor(double amount) {
+		powerDivisor = powerDivisor * (1f + amount);
+	}
+
+	@Override
+	public double getPowerDivisor() {
+		return powerDivisor;
 	}
 
 	@Override
 	public long getEuPerTick(long baseEu) {
-		return (long) (baseEu * powerMultiplier);
+		return Math.max(1, (long) (baseEu * this.getPowerMultiplier()));
 	}
 
 	@Override
@@ -405,18 +423,18 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 				info.add(Text.literal(Formatting.GOLD + "" + getOptionalInventory().get().getContents() + Formatting.GRAY + " items"));
 			}
 			if (!upgradeInventory.isEmpty()) {
-				info.add(Text.literal(Formatting .GOLD + "" + upgradeInventory.getContents() + Formatting .GRAY + " upgrades"));
+				info.add(Text.literal(Formatting.GOLD + "" + upgradeInventory.getContents() + Formatting.GRAY + " upgrades"));
 			}
 		}
 	}
 
-	public Block getBlockType(){
+	public Block getBlockType() {
 		return world.getBlockState(pos).getBlock();
 	}
 
 	@Override
 	public int size() {
-		if(getOptionalInventory().isPresent()){
+		if (getOptionalInventory().isPresent()) {
 			return getOptionalInventory().get().size();
 		}
 		return 0;
@@ -424,7 +442,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 
 	@Override
 	public boolean isEmpty() {
-		if(getOptionalInventory().isPresent()){
+		if (getOptionalInventory().isPresent()) {
 			return getOptionalInventory().get().isEmpty();
 		}
 		return true;
@@ -432,7 +450,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 
 	@Override
 	public ItemStack getStack(int i) {
-		if(getOptionalInventory().isPresent()){
+		if (getOptionalInventory().isPresent()) {
 			return getOptionalInventory().get().getStack(i);
 		}
 		return ItemStack.EMPTY;
@@ -440,7 +458,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 
 	@Override
 	public ItemStack removeStack(int i, int i1) {
-		if(getOptionalInventory().isPresent()){
+		if (getOptionalInventory().isPresent()) {
 			return getOptionalInventory().get().removeStack(i, i1);
 		}
 		return ItemStack.EMPTY;
@@ -448,7 +466,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 
 	@Override
 	public ItemStack removeStack(int i) {
-		if(getOptionalInventory().isPresent()){
+		if (getOptionalInventory().isPresent()) {
 			return getOptionalInventory().get().removeStack(i);
 		}
 		return ItemStack.EMPTY;
@@ -456,14 +474,14 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 
 	@Override
 	public void setStack(int i, ItemStack itemStack) {
-		if(getOptionalInventory().isPresent()){
+		if (getOptionalInventory().isPresent()) {
 			getOptionalInventory().get().setStack(i, itemStack);
 		}
 	}
 
 	@Override
 	public boolean canPlayerUse(PlayerEntity playerEntity) {
-		if(getOptionalInventory().isPresent()){
+		if (getOptionalInventory().isPresent()) {
 			return getOptionalInventory().get().canPlayerUse(playerEntity);
 		}
 		return false;
@@ -486,7 +504,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 
 	@Override
 	public void clear() {
-		if(getOptionalInventory().isPresent()){
+		if (getOptionalInventory().isPresent()) {
 			getOptionalInventory().get().clear();
 		}
 	}
@@ -499,7 +517,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 
 	@Override
 	public int[] getAvailableSlots(Direction side) {
-		if(slotConfiguration == null){
+		if (slotConfiguration == null) {
 			return new int[]{}; // I think should be ok, if needed this can return all the slots
 		}
 		return slotConfiguration.getSlotsForSide(side).stream()
@@ -510,7 +528,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 
 	@Override
 	public boolean canInsert(int index, ItemStack stack, @Nullable Direction direction) {
-		if(direction == null || slotConfiguration == null){
+		if (direction == null || slotConfiguration == null) {
 			return false;
 		}
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
@@ -535,11 +553,11 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 		return slotConfig.getSlotIO().ioConfig.isExtract();
 	}
 
-	public void onBreak(World world, PlayerEntity playerEntity, BlockPos blockPos, BlockState blockState){
+	public void onBreak(World world, PlayerEntity playerEntity, BlockPos blockPos, BlockState blockState) {
 
 	}
 
-	public void onPlace(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack){
+	public void onPlace(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 
 	}
 

@@ -63,6 +63,7 @@ public class ToolTipAssistUtils {
 			case TRANSFORMER -> shouldStackCalculate = false;
 			case ENERGY_STORAGE -> tips.add(getStatStringUnit(I18n.translate("techreborn.tooltip.upgrade.storage_increase"), calculateValue(TechRebornConfig.energyStoragePower, count, shiftHeld), " E", true));
 			case SUPERCONDUCTOR -> tips.add(getStatStringUnit(I18n.translate("techreborn.tooltip.upgrade.flow_increase"), calculateValue(Math.pow(2, (TechRebornConfig.superConductorCount + 2)) * 100, count, shiftHeld), "%", true));
+			case ENERGY_EFFICIENCY -> tips.add(getStatStringUnit(I18n.translate("techreborn.tooltip.upgrade.energy_decrease"), 1D / calculateEnergyIncrease(TechRebornConfig.energyEfficiencyPower + 1, count, shiftHeld), "x", true));
 		}
 
 		// Add reminder that they can use shift to calculate the entire stack

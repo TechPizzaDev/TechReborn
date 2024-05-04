@@ -106,7 +106,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	};
 
 	public RecipeCrafter(RebornRecipeType<?> recipeType, BlockEntity blockEntity, int inputs, int outputs, RebornInventory<?> inventory,
-						int[] inputSlots, int[] outputSlots) {
+						 int[] inputSlots, int[] outputSlots) {
 		this.recipeType = recipeType;
 		this.blockEntity = blockEntity;
 		if (blockEntity instanceof PowerAcceptorBlockEntity powerAcceptor) {
@@ -133,7 +133,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 			return;
 		}
 		ticksSinceLastChange++;
-		if (cachedWorldTime == 0){
+		if (cachedWorldTime == 0) {
 			cachedWorldTime = blockEntity.getWorld().getTime();
 		}
 		cachedWorldTime++;
@@ -191,7 +191,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 				long useRequirement = getEuPerTick(currentRecipe.getPower());
 				if (energy.tryUseExact(useRequirement)) {
 					currentTickTime++;
-					if ((currentTickTime == 1 || currentTickTime % 20 == 0 && cachedWorldTime > lastSoundTime+ 10) && soundHandler != null && !isMuffled()) {
+					if ((currentTickTime == 1 || currentTickTime % 20 == 0 && cachedWorldTime > lastSoundTime + 10) && soundHandler != null && !isMuffled()) {
 						lastSoundTime = cachedWorldTime;
 						soundHandler.playSound(false, blockEntity);
 					}
@@ -308,8 +308,8 @@ public class RecipeCrafter implements IUpgradeHandler {
 
 		if (blockEntity != null && blockEntity.getWorld() != null && blockEntity.getWorld().isClient) {
 			blockEntity.getWorld().updateListeners(blockEntity.getPos(),
-					blockEntity.getWorld().getBlockState(blockEntity.getPos()),
-					blockEntity.getWorld().getBlockState(blockEntity.getPos()), 3);
+				blockEntity.getWorld().getBlockState(blockEntity.getPos()),
+				blockEntity.getWorld().getBlockState(blockEntity.getPos()), 3);
 		}
 	}
 
@@ -345,7 +345,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	public void setIsActive() {
 		BlockPos pos = blockEntity.getPos();
 		if (blockEntity.getWorld() == null) return;
-		BlockState oldState  = blockEntity.getWorld().getBlockState(pos);
+		BlockState oldState = blockEntity.getWorld().getBlockState(pos);
 		if (oldState.getBlock() instanceof BlockMachineBase blockMachineBase) {
 			boolean isActive = isActive() || canCraftAgain();
 
@@ -412,6 +412,16 @@ public class RecipeCrafter implements IUpgradeHandler {
 	@Override
 	public double getPowerMultiplier() {
 		return parentUpgradeHandler.map(IUpgradeHandler::getPowerMultiplier).orElse(1D);
+	}
+
+	@Override
+	public void addPowerDivisor(double amount) {
+		parentUpgradeHandler.ifPresent(iUpgradeHandler -> iUpgradeHandler.addPowerDivisor(amount));
+	}
+
+	@Override
+	public double getPowerDivisor() {
+		return parentUpgradeHandler.map(IUpgradeHandler::getPowerDivisor).orElse(1D);
 	}
 
 	@Override

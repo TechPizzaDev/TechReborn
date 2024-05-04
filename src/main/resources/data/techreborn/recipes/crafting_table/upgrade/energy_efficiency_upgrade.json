@@ -1,0 +1,31 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"LYL",
+		"WBW",
+		"PCP"
+	],
+	"key": {
+		"L": {
+			"tag": "c:lazurite_plates"
+		},
+		"P": {
+			"tag": "c:electrum_plates"
+		},
+		"B": {
+			"item": "techreborn:red_cell_battery"
+		},
+		"C": {
+			"item": "techreborn:advanced_circuit"
+		},
+		"W": {
+			"item": "techreborn:insulated_gold_cable"
+		},
+		"Y": {
+			"tag": "c:yellow_garnet_plates"
+		}
+	},
+	"result": {
+		"item": "techreborn:energy_efficiency_upgrade"
+	}
+}

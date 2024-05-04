@@ -331,6 +331,12 @@ public class TechRebornConfig {
 	@Config(config = "items", category = "upgrades", key = "transformer_max_count", comment = "Max count of Transformer Upgrades")
 	public static int transformerMaxCount = 4;
 
+	@Config(config = "items", category = "upgrades", key = "energy_efficiency", comment = "Energy behavior power multiplier")
+	public static double energyEfficiencyPower = 0.5;
+
+	@Config(config = "items", category = "upgrades", key = "energy_efficiency_max_count", comment = "Max count of Energy Efficiency Upgrades")
+	public static int energyEfficiencyMaxCount = 4;
+
 	// Storages
 	@Config(config = "machines", category = "lesu", key = "LesuMaxEnergyPerBlock", comment = "LESU Max Energy Per Block")
 	public static int lesuStoragePerBlock = 4_000_000;

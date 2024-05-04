@@ -39,6 +39,10 @@ public interface IUpgradeHandler {
 
 	double getPowerMultiplier();
 
+	void addPowerDivisor(double amount);
+
+	double getPowerDivisor();
+
 	long getEuPerTick(long baseEu);
 
 	void addSpeedMultiplier(double amount);

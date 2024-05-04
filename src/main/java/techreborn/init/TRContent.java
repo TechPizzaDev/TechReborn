@@ -1615,6 +1615,19 @@ public class TRContent {
 		}),
 		MUFFLER((blockEntity, handler, stack) -> {
 			blockEntity.muffle();
+		}),
+		ENERGY_EFFICIENCY(new IUpgrade() {
+			@Override
+			public void process(@NotNull MachineBaseBlockEntity blockEntity, @Nullable IUpgradeHandler handler, @NotNull ItemStack stack) {
+				if (handler != null) {
+					handler.addPowerDivisor(TechRebornConfig.energyEfficiencyPower * stack.getCount());
+				}
+			}
+
+			@Override
+			public int getMaxUpgradeCount() {
+				return TechRebornConfig.energyEfficiencyMaxCount;
+			}
 		});
 
 		public final String name;
