@@ -42,7 +42,7 @@ public class UpgradeSlot extends BaseSlot {
 			return false;
 		}
 		IUpgradeable upgradeable = null;
-		RebornInventory inv = (RebornInventory) inventory;
+		RebornInventory<?> inv = (RebornInventory<?>) inventory;
 		BlockEntity blockEntity = inv.getBlockEntity();
 		if (blockEntity instanceof IUpgradeable) {
 			upgradeable = (IUpgradeable) blockEntity;
@@ -51,8 +51,13 @@ public class UpgradeSlot extends BaseSlot {
 	}
 
 	@Override
-	public int getMaxItemCount() {
-		return 1;
-	}
+	public int getMaxItemCount(ItemStack stack) {
+		int stackCount = super.getMaxItemCount(stack);
+		if (stack.getItem() instanceof IUpgrade upgrade) {
+			stackCount = Math.min(stackCount, upgrade.getMaxUpgradeCount());
+		}
 
+		int invCount = inventory.count(stack.getItem());
+		return Math.max(0, stackCount - invCount);
+	}
 }

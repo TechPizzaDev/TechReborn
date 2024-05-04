@@ -107,7 +107,7 @@ public class IronAlloyFurnaceBlockEntity extends AbstractIronMachineBlockEntity 
 		if (!inventory.getStack(OUTPUT_SLOT).isOf(itemstack.getItem()))
 			return false;
 		int result = inventory.getStack(OUTPUT_SLOT).getCount() + itemstack.getCount();
-		return result <= inventory.getStackLimit() && result <= inventory.getStack(OUTPUT_SLOT).getMaxCount();
+		return result <= inventory.getMaxCountPerStack() && result <= inventory.getStack(OUTPUT_SLOT).getMaxCount();
 	}
 
 	@Override

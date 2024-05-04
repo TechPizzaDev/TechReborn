@@ -224,7 +224,7 @@ public class BuiltScreenHandler extends ScreenHandler {
 		for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
 			final Slot slot = this.slots.get(slotIndex);
 			final ItemStack stackInSlot = slot.getStack();
-			int maxCount = Math.min(stackToShift.getMaxCount(), slot.getMaxItemCount());
+			int maxCount = slot.getMaxItemCount(stackToShift);
 
 			if (!stackToShift.isEmpty() && slot.canInsert(stackToShift)) {
 				if (ItemUtils.isItemEqual(stackInSlot, stackToShift, true, false)) {
@@ -245,7 +245,7 @@ public class BuiltScreenHandler extends ScreenHandler {
 			final ItemStack stackInSlot = slot.getStack();
 
 			if (stackInSlot.isEmpty() && slot.canInsert(stackToShift)) {
-				int maxCount = Math.min(stackToShift.getMaxCount(), slot.getMaxItemCount());
+				int maxCount = slot.getMaxItemCount(stackToShift);
 
 				int moveCount = Math.min(maxCount, stackToShift.getCount());
 				ItemStack moveStack = stackToShift.copy();

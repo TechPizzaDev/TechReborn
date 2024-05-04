@@ -52,4 +52,9 @@ public class UpgradeItem extends Item implements IUpgrade {
 					ItemStack stack) {
 		behavior.process(blockEntity, handler, stack);
 	}
+
+	@Override
+	public int getMaxUpgradeCount() {
+		return behavior.getMaxUpgradeCount();
+	}
 }

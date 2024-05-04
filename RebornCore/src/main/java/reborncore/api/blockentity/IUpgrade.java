@@ -42,6 +42,10 @@ public interface IUpgrade {
 			@NotNull
 					ItemStack stack);
 
+	default int getMaxUpgradeCount() {
+		return 1;
+	}
+
 	default boolean isValidForInventory(IUpgradeable upgradeable, ItemStack stack) {
 		return true;
 	}

@@ -145,10 +145,6 @@ public class RebornInventory<T extends MachineBaseBlockEntity> extends Inventory
 		this.hasChanged = false;
 	}
 
-	public int getStackLimit() {
-		return stackLimit;
-	}
-
 	@Override
 	public void markDirty() {
 		super.markDirty();

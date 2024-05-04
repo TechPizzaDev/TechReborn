@@ -67,7 +67,7 @@ import java.util.Optional;
  */
 public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTicker<MachineBaseBlockEntity>, IUpgradeable, IUpgradeHandler, IListInfoProvider, Inventory, SidedInventory, RedstoneConfigurable {
 
-	public RebornInventory<MachineBaseBlockEntity> upgradeInventory = new RebornInventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, blockEntity) -> true);
+	public RebornInventory<MachineBaseBlockEntity> upgradeInventory = new RebornInventory<>(getUpgradeSlotCount(), "upgrades", 16, this, (slotID, stack, face, direction, blockEntity) -> true);
 	private SlotConfiguration slotConfiguration;
 	public FluidConfiguration fluidConfiguration;
 	private RedstoneConfiguration redstoneConfiguration;
@@ -179,8 +179,8 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 			resetUpgrades();
 			for (int i = 0; i < getUpgradeSlotCount(); i++) {
 				ItemStack stack = getUpgradeInventory().getStack(i);
-				if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
-					((IUpgrade) stack.getItem()).process(this, this, stack);
+				if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade upgradeItem) {
+					upgradeItem.process(this, this, stack);
 				}
 			}
 			afterUpgradesApplication();

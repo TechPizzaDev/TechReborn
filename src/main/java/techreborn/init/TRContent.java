@@ -48,10 +48,12 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import reborncore.api.blockentity.IUpgrade;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.fluid.FluidValue;
 import reborncore.common.misc.TagConvertible;
 import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
 import reborncore.common.powerSystem.RcEnergyTier;
+import reborncore.common.recipes.IUpgradeHandler;
 import techreborn.TechReborn;
 import techreborn.blockentity.GuiType;
 import techreborn.blockentity.generator.LightningRodBlockEntity;
@@ -1538,45 +1540,77 @@ public class TRContent {
 	}
 
 	public enum Upgrades implements ItemConvertible {
-		OVERCLOCKER((blockEntity, handler, stack) -> {
-			PowerAcceptorBlockEntity powerAcceptor = null;
-			if (blockEntity instanceof PowerAcceptorBlockEntity) {
-				powerAcceptor = (PowerAcceptorBlockEntity) blockEntity;
+		OVERCLOCKER(new IUpgrade() {
+			@Override
+			public void process(@NotNull MachineBaseBlockEntity blockEntity, @Nullable IUpgradeHandler handler, @NotNull ItemStack stack) {
+				PowerAcceptorBlockEntity powerAcceptor = null;
+				if (blockEntity instanceof PowerAcceptorBlockEntity) {
+					powerAcceptor = (PowerAcceptorBlockEntity) blockEntity;
+				}
+				if (handler != null) {
+					handler.addSpeedMultiplier(TechRebornConfig.overclockerSpeed * stack.getCount());
+					handler.addPowerMultiplier(TechRebornConfig.overclockerPower * stack.getCount());
+				}
+				if (powerAcceptor != null) {
+					powerAcceptor.extraPowerInput += powerAcceptor.getMaxInput(null) * stack.getCount();
+					powerAcceptor.extraPowerStorage += powerAcceptor.getBaseMaxPower() * stack.getCount();
+				}
 			}
-			if (handler != null) {
-				handler.addSpeedMultiplier(TechRebornConfig.overclockerSpeed);
-				handler.addPowerMultiplier(TechRebornConfig.overclockerPower);
-			}
-			if (powerAcceptor != null) {
-				powerAcceptor.extraPowerInput += powerAcceptor.getMaxInput(null);
-				powerAcceptor.extraPowerStorage += powerAcceptor.getBaseMaxPower();
-			}
-		}),
-		TRANSFORMER((blockEntity, handler, stack) -> {
-			PowerAcceptorBlockEntity powerAcceptor = null;
-			if (blockEntity instanceof PowerAcceptorBlockEntity) {
-				powerAcceptor = (PowerAcceptorBlockEntity) blockEntity;
-			}
-			if (powerAcceptor != null) {
-				powerAcceptor.extraTier += 1;
-			}
-		}),
-		ENERGY_STORAGE((blockEntity, handler, stack) -> {
-			PowerAcceptorBlockEntity powerAcceptor = null;
-			if (blockEntity instanceof PowerAcceptorBlockEntity) {
-				powerAcceptor = (PowerAcceptorBlockEntity) blockEntity;
-			}
-			if (powerAcceptor != null) {
-				powerAcceptor.extraPowerStorage += TechRebornConfig.energyStoragePower;
+
+			@Override
+			public int getMaxUpgradeCount() {
+				return TechRebornConfig.overclockerMaxCount;
 			}
 		}),
-		SUPERCONDUCTOR((blockEntity, handler, stack) -> {
-			AdjustableSUBlockEntity aesu = null;
-			if (blockEntity instanceof AdjustableSUBlockEntity) {
-				aesu = (AdjustableSUBlockEntity) blockEntity;
+		TRANSFORMER(new IUpgrade() {
+			@Override
+			public void process(@NotNull MachineBaseBlockEntity blockEntity, @Nullable IUpgradeHandler handler, @NotNull ItemStack stack) {
+				PowerAcceptorBlockEntity powerAcceptor = null;
+				if (blockEntity instanceof PowerAcceptorBlockEntity) {
+					powerAcceptor = (PowerAcceptorBlockEntity) blockEntity;
+				}
+				if (powerAcceptor != null) {
+					powerAcceptor.extraTier += stack.getCount();
+				}
 			}
-			if (aesu != null) {
-				aesu.superconductors += TechRebornConfig.superConductorCount;
+
+			@Override
+			public int getMaxUpgradeCount() {
+				return TechRebornConfig.transformerMaxCount;
+			}
+		}),
+		ENERGY_STORAGE(new IUpgrade() {
+			@Override
+			public void process(@NotNull MachineBaseBlockEntity blockEntity, @Nullable IUpgradeHandler handler, @NotNull ItemStack stack) {
+				PowerAcceptorBlockEntity powerAcceptor = null;
+				if (blockEntity instanceof PowerAcceptorBlockEntity) {
+					powerAcceptor = (PowerAcceptorBlockEntity) blockEntity;
+				}
+				if (powerAcceptor != null) {
+					powerAcceptor.extraPowerStorage += TechRebornConfig.energyStoragePower * stack.getCount();
+				}
+			}
+
+			@Override
+			public int getMaxUpgradeCount() {
+				return TechRebornConfig.energyStorageMaxCount;
+			}
+		}),
+		SUPERCONDUCTOR(new IUpgrade() {
+			@Override
+			public void process(@NotNull MachineBaseBlockEntity blockEntity, @Nullable IUpgradeHandler handler, @NotNull ItemStack stack) {
+				AdjustableSUBlockEntity aesu = null;
+				if (blockEntity instanceof AdjustableSUBlockEntity) {
+					aesu = (AdjustableSUBlockEntity) blockEntity;
+				}
+				if (aesu != null) {
+					aesu.superconductors += TechRebornConfig.superConductorCount * stack.getCount();
+				}
+			}
+
+			@Override
+			public int getMaxUpgradeCount() {
+				return TechRebornConfig.superConductorMaxCount;
 			}
 		}),
 		MUFFLER((blockEntity, handler, stack) -> {

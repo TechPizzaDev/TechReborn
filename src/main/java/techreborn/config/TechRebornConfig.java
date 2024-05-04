@@ -313,11 +313,23 @@ public class TechRebornConfig {
 	@Config(config = "items", category = "upgrades", key = "overclocker_power", comment = "Overclocker behavior power multiplier")
 	public static double overclockerPower = 0.75;
 
+	@Config(config = "items", category = "upgrades", key = "overclocker_max_count", comment = "Max count of Overclocker Upgrades")
+	public static int overclockerMaxCount = 4;
+
 	@Config(config = "items", category = "upgrades", key = "energy_storage", comment = "Energy storage behavior extra power")
 	public static double energyStoragePower = 40_000;
 
+	@Config(config = "items", category = "upgrades", key = "energy_storage_max_count", comment = "Max count of Energy Storage Upgrades")
+	public static int  energyStorageMaxCount = 4;
+
 	@Config(config = "items", category = "upgrades", key = "super_conductor", comment = "Energy flow power increase")
 	public static double superConductorCount = 1;
+
+	@Config(config = "items", category = "upgrades", key = "super_conductor_max_count", comment = "Max count of Superconductor Upgrades")
+	public static int superConductorMaxCount = 4;
+
+	@Config(config = "items", category = "upgrades", key = "transformer_max_count", comment = "Max count of Transformer Upgrades")
+	public static int transformerMaxCount = 4;
 
 	// Storages
 	@Config(config = "machines", category = "lesu", key = "LesuMaxEnergyPerBlock", comment = "LESU Max Energy Per Block")
