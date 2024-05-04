@@ -35,7 +35,7 @@ public class SlotInput extends BaseSlot {
 
 	@Override
 	public boolean canInsert(ItemStack par1ItemStack) {
-		return true;
+		return super.canInsert(par1ItemStack);
 	}
 
 	@Override

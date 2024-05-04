@@ -32,15 +32,9 @@ import java.util.function.Predicate;
 public class FilteredSlot extends BaseSlot {
 
 	private Predicate<ItemStack> filter;
-	private int stackLimit = 64;
 
 	public FilteredSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition) {
 		super(inventory, index, xPosition, yPosition);
-	}
-
-	public FilteredSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition, int stackLimit) {
-		super(inventory, index, xPosition, yPosition);
-		this.stackLimit = stackLimit;
 	}
 
 	public FilteredSlot setFilter(final Predicate<ItemStack> filter) {
@@ -50,15 +44,10 @@ public class FilteredSlot extends BaseSlot {
 
 	@Override
 	public boolean canInsert(final ItemStack stack) {
-		try {
-			return this.filter.test(stack);
-		} catch (NullPointerException e) {
-			return true;
+		boolean insert = super.canInsert(stack);
+		if (this.filter != null) {
+			return insert && this.filter.test(stack);
 		}
-	}
-
-	@Override
-	public int getMaxItemCount() {
-		return stackLimit;
+		return insert;
 	}
 }

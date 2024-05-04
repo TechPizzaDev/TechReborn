@@ -56,8 +56,6 @@ public class UpgradeSlot extends BaseSlot {
 		if (stack.getItem() instanceof IUpgrade upgrade) {
 			stackCount = Math.min(stackCount, upgrade.getMaxUpgradeCount());
 		}
-
-		int invCount = inventory.count(stack.getItem());
-		return Math.max(0, stackCount - invCount);
+		return stackCount;
 	}
 }

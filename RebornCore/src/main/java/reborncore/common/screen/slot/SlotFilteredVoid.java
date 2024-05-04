@@ -52,7 +52,7 @@ public class SlotFilteredVoid extends BaseSlot {
 			}
 		}
 
-		return super.canInsert(stack);
+		return true;
 	}
 
 	@Override

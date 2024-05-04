@@ -38,7 +38,7 @@ public class FurnaceFuelSlot extends BaseSlot {
 
 	@Override
 	public boolean canInsert(ItemStack stack) {
-		return AbstractFurnaceBlockEntity.canUseAsFuel(stack) || isBucket(stack);
+		return super.canInsert(stack) && (AbstractFurnaceBlockEntity.canUseAsFuel(stack) || isBucket(stack));
 	}
 
 	@Override

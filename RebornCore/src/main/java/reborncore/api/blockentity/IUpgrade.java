@@ -24,6 +24,7 @@
 
 package reborncore.api.blockentity;
 
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,17 +37,20 @@ import reborncore.common.recipes.IUpgradeHandler;
 public interface IUpgrade {
 
 	void process(
-			@NotNull MachineBaseBlockEntity machineBase,
-			@Nullable
-					IUpgradeHandler handler,
-			@NotNull
-					ItemStack stack);
+		@NotNull MachineBaseBlockEntity machineBase,
+		@Nullable IUpgradeHandler handler,
+		@NotNull ItemStack stack);
 
 	default int getMaxUpgradeCount() {
 		return 1;
 	}
 
-	default boolean isValidForInventory(IUpgradeable upgradeable, ItemStack stack) {
-		return true;
+	default boolean isValidForInventory(@Nullable IUpgradeable upgradeable, ItemStack stack) {
+		if (upgradeable == null) {
+			return true;
+		}
+		Inventory inventory = upgradeable.getUpgradeInventory();
+		int invCount = inventory.count(stack.getItem());
+		return invCount < this.getMaxUpgradeCount();
 	}
 }

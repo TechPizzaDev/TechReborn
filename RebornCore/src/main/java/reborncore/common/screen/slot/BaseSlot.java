@@ -27,6 +27,7 @@ package reborncore.common.screen.slot;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
+import reborncore.api.blockentity.IUpgrade;
 
 import java.util.function.Predicate;
 
@@ -35,15 +36,8 @@ import java.util.function.Predicate;
  */
 public class BaseSlot extends Slot {
 
-	private Predicate<ItemStack> filter = (stack) -> true;
-
 	public BaseSlot(Inventory inventoryIn, int index, int xPosition, int yPosition) {
 		super(inventoryIn, index, xPosition, yPosition);
-	}
-
-	public BaseSlot(Inventory inventoryIn, int index, int xPosition, int yPosition, Predicate<ItemStack> filter) {
-		super(inventoryIn, index, xPosition, yPosition);
-		this.filter = filter;
 	}
 
 	public boolean canWorldBlockRemove() {
@@ -52,7 +46,7 @@ public class BaseSlot extends Slot {
 
 	@Override
 	public boolean canInsert(ItemStack stack) {
-		return filter.test(stack);
+		return !(stack.getItem() instanceof IUpgrade);
 	}
 
 	public boolean canWorldBlockInsert() {

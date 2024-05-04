@@ -30,7 +30,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
-import reborncore.api.blockentity.IUpgrade;
 import reborncore.common.screen.BuiltScreenHandler;
 import reborncore.common.screen.BuiltScreenHandlerProvider;
 import reborncore.common.screen.builder.ScreenHandlerBuilder;
@@ -53,9 +52,6 @@ public class RecyclerBlockEntity extends GenericMachineBlockEntity implements Bu
 
 	public static boolean canRecycle(ItemStack stack) {
 		Item item = stack.getItem();
-		if ((item instanceof IUpgrade)) {
-			return false;
-		}
 		return !TechRebornConfig.recyclerBlackList.contains(Registries.ITEM.getId(item).toString());
 	}
 
@@ -63,7 +59,7 @@ public class RecyclerBlockEntity extends GenericMachineBlockEntity implements Bu
 	@Override
 	public BuiltScreenHandler createScreenHandler(int syncID, PlayerEntity player) {
 		return new ScreenHandlerBuilder("recycler").player(player.getInventory()).inventory().hotbar().addInventory()
-				.blockEntity(this).slot(0, 55, 45, RecyclerBlockEntity::canRecycle)
+				.blockEntity(this).filterSlot(0, 55, 45, RecyclerBlockEntity::canRecycle)
 				.outputSlot(1, 101, 45).energySlot(2, 8, 72).syncEnergyValue()
 				.syncCrafterValue().addInventory().create(this, syncID);
 	}

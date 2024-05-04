@@ -80,11 +80,6 @@ public class BlockEntityScreenHandlerBuilder {
 		return this;
 	}
 
-	public BlockEntityScreenHandlerBuilder slot(final int index, final int x, final int y, Predicate<ItemStack> filter) {
-		this.parent.slots.add(new BaseSlot(this.inventory, index, x, y, filter));
-		return this;
-	}
-
 	public BlockEntityScreenHandlerBuilder outputSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new SlotOutput(this.inventory, index, x, y));
 		return this;
