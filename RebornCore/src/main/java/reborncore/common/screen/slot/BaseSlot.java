@@ -36,8 +36,15 @@ import java.util.function.Predicate;
  */
 public class BaseSlot extends Slot {
 
+	protected Predicate<ItemStack> filter = stack -> !(stack.getItem() instanceof IUpgrade);
+
 	public BaseSlot(Inventory inventoryIn, int index, int xPosition, int yPosition) {
 		super(inventoryIn, index, xPosition, yPosition);
+	}
+
+	public BaseSlot(Inventory inventoryIn, int index, int xPosition, int yPosition, Predicate<ItemStack> filter) {
+		super(inventoryIn, index, xPosition, yPosition);
+		this.filter = filter;
 	}
 
 	public boolean canWorldBlockRemove() {
@@ -46,7 +53,7 @@ public class BaseSlot extends Slot {
 
 	@Override
 	public boolean canInsert(ItemStack stack) {
-		return !(stack.getItem() instanceof IUpgrade);
+		return filter.test(stack);
 	}
 
 	public boolean canWorldBlockInsert() {

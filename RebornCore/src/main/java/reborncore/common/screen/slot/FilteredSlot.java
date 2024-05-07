@@ -26,28 +26,24 @@ package reborncore.common.screen.slot;
 
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import reborncore.api.blockentity.IUpgrade;
 
 import java.util.function.Predicate;
 
 public class FilteredSlot extends BaseSlot {
-
-	private Predicate<ItemStack> filter;
 
 	public FilteredSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition) {
 		super(inventory, index, xPosition, yPosition);
 	}
 
 	public FilteredSlot setFilter(final Predicate<ItemStack> filter) {
-		this.filter = filter;
+		this.filter = filter != null ? filter : (stack -> true);
 		return this;
 	}
 
 	@Override
 	public boolean canInsert(final ItemStack stack) {
-		boolean insert = super.canInsert(stack);
-		if (this.filter != null) {
-			return insert && this.filter.test(stack);
-		}
-		return insert;
+		boolean insert = !(stack.getItem() instanceof IUpgrade);
+		return insert && this.filter.test(stack);
 	}
 }
